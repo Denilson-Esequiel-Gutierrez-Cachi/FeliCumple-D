@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atardecer con Mirador y Feliz Cumpleaños</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+    <!-- Canvas para las letras animadas de neón -->
+    <canvas id="c"></canvas>
+
+    <div class="paisaje">
+        <!-- CIELO -->
+        <div class="cielo"></div>
+
+        <!-- SOL Y LUNA -->
+        <div class="sol"></div>
+        <div class="luna"></div>
+
+        <!-- ESTRELLAS Y ESTRELLAS FUGACES -->
+        <div class="estrellas-fijas"></div>
+        <div class="night">
+            <div class="shooting_star"></div>
+            <div class="shooting_star"></div>
+            <div class="shooting_star"></div>
+            <div class="shooting_star"></div>
+            <div class="shooting_star"></div>
+            <div class="shooting_star"></div>
+            <div class="shooting_star"></div>
+            <div class="shooting_star"></div>
+            <div class="shooting_star"></div>
+            <div class="shooting_star"></div>
+        </div>
+
+        <!-- NUBES -->
+        <div class="nube nube1">
+            <div class="circulo c1"></div>
+            <div class="circulo c2"></div>
+        </div>
+        <div class="nube nube2">
+            <div class="circulo c1"></div>
+            <div class="circulo c2"></div>
+        </div>
+        <div class="nube nube3">
+            <div class="circulo c1"></div>
+            <div class="circulo c2"></div>
+        </div>
+
+        <!-- MONTAÑAS -->
+        <svg class="montanas-traseras" viewBox="0 0 1200 400" preserveAspectRatio="none">
+            <polygon points="0,400 100,280 250,400" fill="#6a586a" />
+            <polygon points="100,280 250,400 0,400" fill="#584859" />
+            <polygon points="200,400 400,180 700,400" fill="#6a586a" />
+            <polygon points="400,180 700,400 550,400" fill="#584859" />
+            <polygon points="600,400 850,220 1200,400" fill="#6a586a" />
+            <polygon points="850,220 1200,400 1000,400" fill="#584859" />
+        </svg>
+
+        <svg class="montanas-frontales" viewBox="0 0 1200 300" preserveAspectRatio="none">
+            <polygon points="-50,300 150,150 400,300" fill="#2d2f45" />
+            <polygon points="150,150 400,300 280,300" fill="#1e2030" />
+            <polygon points="300,300 650,100 1000,300" fill="#2d2f45" />
+            <polygon points="650,100 1000,300 820,300" fill="#1e2030" />
+            <polygon points="800,300 1050,160 1250,300" fill="#2d2f45" />
+            <polygon points="1050,160 1250,300 1150,300" fill="#1e2030" />
+        </svg>
+
+        <!-- MIRADOR GRANDE CON DOBLE CRUZ -->
+        <div class="mirador">
+            <div class="techo"></div>
+            <div class="estructura">
+                <div class="ventana v1"></div>
+                <div class="ventana v2"></div>
+            </div>
+            <div class="base-cruz">
+                <div class="barandilla"></div>
+                <div class="viga-v izquierda"></div>
+                <div class="viga-v derecha"></div>
+                <div class="seccion-cruz cruz-superior">
+                    <div class="cruz-diagonal c1"></div>
+                    <div class="cruz-diagonal c2"></div>
+                </div>
+                <div class="seccion-cruz cruz-inferior">
+                    <div class="cruz-diagonal c1"></div>
+                    <div class="cruz-diagonal c2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOSQUE DE PINOS (8 PINOS) -->
+        <div class="pino-multicapa pino-pos-1"><div class="copa copa-top"></div><div class="copa copa-mid"></div><div class="copa copa-bot"></div><div class="tronco"></div></div>
+        <div class="pino-multicapa pino-pos-2"><div class="copa copa-top"></div><div class="copa copa-mid"></div><div class="copa copa-bot"></div><div class="tronco"></div></div>
+        <div class="pino-multicapa pino-pos-3"><div class="copa copa-top"></div><div class="copa copa-mid"></div><div class="copa copa-bot"></div><div class="tronco"></div></div>
+        <div class="pino-multicapa pino-pos-4"><div class="copa copa-top"></div><div class="copa copa-mid"></div><div class="copa copa-bot"></div><div class="tronco"></div></div>
+        <div class="pino-multicapa pino-pos-5"><div class="copa copa-top"></div><div class="copa copa-mid"></div><div class="copa copa-bot"></div><div class="tronco"></div></div>
+        <div class="pino-multicapa pino-pos-6"><div class="copa copa-top"></div><div class="copa copa-mid"></div><div class="copa copa-bot"></div><div class="tronco"></div></div>
+        <div class="pino-multicapa pino-pos-7"><div class="copa copa-top"></div><div class="copa copa-mid"></div><div class="copa copa-bot"></div><div class="tronco"></div></div>
+        <div class="pino-multicapa pino-pos-8"><div class="copa copa-top"></div><div class="copa copa-mid"></div><div class="copa copa-bot"></div><div class="tronco"></div></div>
+
+        <!-- SUELO BASE -->
+        <div class="suelo"></div>
+    </div>
+
+    <!-- SCRIPT DE ANIMACIÓN DE TEXTO -->
+    <script src="script.js"></script>
+    <!-- CARTA INTERACTIVA -->
+        <div id="carta-contenedor" class="carta-oculta">
+            <div class="sobre-carta" onclick="abrirCarta()">
+                <div class="corazon-sello">✨</div>
+                <p>Haz clic para leer</p>
+            </div>
+        </div>
+
+        <!-- MODAL CON EL MENSAJE DE LA CARTA -->
+        <div id="modal-carta" class="modal-carta">
+            <div class="contenido-carta">
+                <span class="cerrar-carta" onclick="cerrarCarta()">&times;</span>
+                <h2>✨ ¡Un mensaje especial! ✨</h2>
+                <div class="cuerpo-mensaje">
+                    <p>¡Feliz Cumpleaños Maria :D!</p>
+                    <p>Que hoy haya sido un hermoso dia para ti y que lo hayas disfrutado con tus amigos y familiares, si fuiste al cine , no? jsjs espero que si y si no... :,c bueno te deseo lo mejor
+                        y espero que la musica te guste si lo sientes triste perdon por eso, talves lo cambie por otro si lo deseas claro jaja, bueno que mas puedo decirte mientras hago el codigo o me olvido que decir pa luego escribir aqui 
+                        pero espero que te hayan dado un pastel y te hayan echo morder a golpe gg, animos que lo lograras vencer este semestre yo creo en ti y saldras como una profesional, aunque la carrera no te haya dado la ilusion que esperabas
+                        estas aun intentando seguirle la corriente pero debe ser dificil pero hazlo tu podras, podras levantarte si tropiezas con ayuda de amigos o familiares, no hagas caso a malos comentarios o que no lo lograras, tu siempre pudiste y vi eso en ti
+                        que pudiste aun asi sola o acompañada intentaste seguir y eso es lo que hace una persona valiosa y fuerte, se que podras lograr y cumplir lo que quieres o quieras hacer, te apoyo y te apoyare siempre, cuidate mucho , aveces la vida puede irse al dia siguiente
+                        o simplemente saber que seguimos aqui y talvez duela saber que tenemos que soportar cosas que no huvieramos deseado en aquel entonces o simplemente aparecio , pero eso no quiere decir que estemos solos o que todo se acabo, por eso hay mucha gente y habras visto Que
+                        sin importar cuantas veces los lastimen o caigan o los traten mal , aun siguen aqui y esas personas como tú son fuertes y valiosos porque enseñan a otros a tener esa confianza , esa esperanza de aun poder lograr ,y lo digo porque tú me hiciste ver eso y aun intentarlo
+                        por eso siempre y siempre que se pueda te doy las gracias Maria, feliz cumpleaños Maria :D 
+                    </p>
+                    <p class="firma">Con mucho cariño Denilson✨</p>
+                </div>
+            </div>
+        </div>
+        <!-- REPRODUCTOR DE AUDIO Y BOTÓN DE CONTROL -->
+        <audio id="musica-fondo" loop>
+            <source src="felicumple_D.m4a" type="audio/mpeg">
+            Tu navegador no soporta el elemento de audio.
+        </audio>
+
+        <button id="btn-musica" class="btn-audio" onclick="toggleMusica()">
+            <span id="icono-musica">🎵</span>
+        </button>
+</body>
+</html>

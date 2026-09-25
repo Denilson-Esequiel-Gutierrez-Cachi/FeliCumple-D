@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Haz un deseo!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        p.instructions {
+            margin-bottom: 20px;
+            color: #aaa;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .candle-count-display {
+            margin-bottom: 25px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        /* PASTEL */
+        .cake {
+            position: relative;
+            width: 250px;
+            height: 200px;
+            cursor: pointer;
+        }
+
+        .plate {
+            width: 270px;
+            height: 110px;
+            position: absolute;
+            bottom: -10px;
+            left: -10px;
+            background-color: #ccc;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .layer {
+            position: absolute;
+            display: block;
+            width: 250px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #553c2e;
+        }
+
+        .layer-top { top: 0px; background-color: #7b5239; }
+        .layer-middle { top: 35px; background-color: #553c2e; }
+        .layer-bottom { top: 70px; background-color: #3d281c; }
+
+        .icing {
+            top: 2px;
+            left: 5px;
+            background-color: #f0e6d2;
+            width: 240px;
+            height: 90px;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        /* VELAS */
+        .candle {
+            background-color: #7b2cbf;
+            width: 12px;
+            height: 45px;
+            border-radius: 6px/3px;
+            position: absolute;
+            margin-left: -6px;
+            margin-top: -35px;
+            z-index: 10;
+        }
+
+        .candle::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 4px;
+            width: 4px;
+            height: 8px;
+            background-color: #333;
+        }
+
+        .flame {
+            position: absolute;
+            background-color: orange;
+            width: 12px;
+            height: 22px;
+            border-radius: 10px 10px 10px 10px / 20px 20px 10px 10px;
+            top: -28px;
+            left: 0px;
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.8), 0 0 20px rgba(255, 165, 0, 0.6);
+            animation: flicker 0.2s infinite alternate;
+        }
+
+        .candle.out .flame {
+            display: none;
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1); }
+            100% { transform: scale(0.9) rotate(-2deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>¡Haz un deseo! 🎂</h1>
+    <p class="instructions">Haz clic en la torta para poner velas y luego sopla el micrófono para apagarlas.</p>
+
+    <div class="candle-count-display">
+        Velas encendidas: <span id="candleCount">0</span>
+    </div>
+
+    <div class="cake">
+        <div class="plate"></div>
+        <div class="layer layer-bottom"></div>
+        <div class="layer layer-middle"></div>
+        <div class="layer layer-top"></div>
+        <div class="icing"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const cake = document.querySelector(".cake");
+            const candleCountDisplay = document.getElementById("candleCount");
+            let candles = [];
+            let audioContext;
+            let analyser;
+            let microphone;
+            let finalizado = false;
+
+            function updateCandleCount() {
+                const activeCandles = candles.filter(
+                    (candle) => !candle.classList.contains("out")
+                ).length;
+                candleCountDisplay.textContent = activeCandles;
+
+             
+                if (candles.length > 0 && activeCandles === 0 && !finalizado) {
+                    finalizado = true;
+                    setTimeout(() => {
+                        window.location.href = "paisaje.html";
+                    }, 1000); 
+                }
+            }
+
+            function addCandle(left, top) {
+                if (finalizado) return;
+
+                const candle = document.createElement("div");
+                candle.className = "candle";
+                candle.style.left = left + "px";
+                candle.style.top = top + "px";
+
+                const flame = document.createElement("div");
+                flame.className = "flame";
+                candle.appendChild(flame);
+
+                cake.appendChild(candle);
+                candles.push(candle);
+                updateCandleCount();
+            }
+
+            cake.addEventListener("click", function (event) {
+                const rect = cake.getBoundingClientRect();
+                const left = event.clientX - rect.left;
+                const top = event.clientY - rect.top;
+                addCandle(left, top);
+            });
+
+            function isBlowing() {
+                if (!analyser) return false;
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+                analyser.getByteFrequencyData(dataArray);
+
+                let sum = 0;
+                for (let i = 0; i < bufferLength; i++) {
+                    sum += dataArray[i];
+                }
+                let average = sum / bufferLength;
+
+                return average > 40;
+            }
+
+            function blowOutCandles() {
+                let blownOut = 0;
+
+                if (isBlowing()) {
+                    candles.forEach((candle) => {
+                        if (!candle.classList.contains("out") && Math.random() > 0.3) {
+                            candle.classList.add("out");
+                            blownOut++;
+                        }
+                    });
+                }
+
+                if (blownOut > 0) {
+                    updateCandleCount();
+                }
+            }
+
+            // hablar micro pe
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices
+                    .getUserMedia({ audio: true })
+                    .then(function (stream) {
+                        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        analyser = audioContext.createAnalyser();
+                        microphone = audioContext.createMediaStreamSource(stream);
+                        microphone.connect(analyser);
+                        analyser.fftSize = 256;
+                        setInterval(blowOutCandles, 200);
+                    })
+                    .catch(function (err) {
+                        console.log("Acceso al micrófono no concedido: " + err);
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
